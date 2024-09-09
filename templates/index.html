@@ -1,0 +1,120 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Instagram Follower Scraper</title>  
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">  
+    <style>  
+        body {  
+            font-family: 'Arial', sans-serif;  
+        }  
+    </style>  
+    <script>  
+        function toggleInput() {  
+            const option = document.querySelector('select[name="option"]').value;  
+            const userInputField = document.getElementById('user_input');  
+            userInputField.disabled = option !== '2'; // Enable or disable input based on the option selected  
+            if (option !== '2') userInputField.value = ''; // Clear the input value if not applicable  
+        }  
+
+        function showLoader() {  
+            const button = document.getElementById('scrape-button');  
+            const loaderContainer = document.getElementById('loader-container');  
+            button.disabled = true; // Disable the button  
+            loaderContainer.classList.remove('hidden'); // Show the loader  
+            button.classList.add('hidden'); // Hide the button  
+        }  
+    </script>  
+</head>  
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">  
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">  
+        <h1 class="text-2xl font-bold mb-6 text-center">Instagram Follower Scraper</h1>  
+        <form method="POST" onsubmit="showLoader()">  
+            <div class="mb-4">  
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>  
+                <div class="relative">  
+                    <input type="text" name="username" id="username" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 pl-10">  
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 material-icons">person</span>  
+                </div>  
+            </div>  
+            <div class="mb-4">  
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>  
+                <div class="relative">  
+                    <input type="password" name="password" id="password" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 pl-10">  
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 material-icons">lock</span>  
+                </div>  
+            </div>  
+            <div class="mb-4">  
+                <label class="block text-sm font-medium text-gray-700">Choose an option</label>  
+                <select name="option" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" onchange="toggleInput()">  
+                    <option value="1">All followers</option>  
+                    <option value="2">Enter a specific number</option>  
+                </select>  
+            </div>  
+            <div class="mb-4">  
+                <label for="user_input" class="block text-sm font-medium text-gray-700">Number of followers (100-2000)</label>  
+                <input type="number" name="user_input" id="user_input" min="100" max="2000" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" disabled>  
+            </div>  
+            <div class="mb-4">  
+                <label for="usernames" class="block text-sm font-medium text-gray-700">Usernames (comma-separated)</label>  
+                <input type="text" name="usernames" id="usernames" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">  
+            </div>  
+            <div id="loader-container" class="hidden flex justify-center">  
+                <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">  
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>  
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>  
+                </svg>  
+            </div>  
+            <button type="submit" id="scrape-button" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition">  
+                Scrape Followers  
+            </button>  
+        </form>  
+
+        {% with messages = get_flashed_messages() %}  
+            {% if messages %}  
+                <div class="mt-4">  
+                    <ul class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">  
+                        {% for message in messages %}  
+                            <li>{{ message }}</li>  
+                        {% endfor %}  
+                    </ul>  
+                </div>  
+            {% endif %}  
+        {% endwith %}  
+
+        {% if results %}  
+            <h2 class="text-xl font-bold mt-8">Results</h2>  
+            <div class="overflow-x-auto max-h-60">  
+                <table id="followers-table" class="min-w-full bg-white border border-gray-300 mt-4">  
+                    <thead>  
+                        <tr>  
+                            <th class="py-2 px-4 border-b">Username</th>  
+                            <th class="py-2 px-4 border-b">Followers</th>  
+                        </tr>  
+                    </thead>  
+                    <tbody>  
+                        {% for username, data in results.items() %}  
+                            <tr>  
+                                <td class="py-2 px-4 border-b">{{ username }} ({{ data.name }})</td>  
+                                <td class="py-2 px-4 border-b">  
+                                    <ul>  
+                                        {% for follower in data.followers %}  
+                                            <li>  
+                                                <a href="https://www.instagram.com/{{ follower.username }}" target="_blank" class="text-blue-600 hover:underline">  
+                                                    {{ follower.username }} ({{ follower.name }})  
+                                                </a>  
+                                            </li>  
+                                        {% endfor %}  
+                                    </ul>   
+                                </td>  
+                            </tr>  
+                        {% endfor %}  
+                    </tbody>  
+                </table>  
+            </div>  
+        {% endif %}  
+    </div>  
+</body>  
+</html>
