@@ -24,6 +24,10 @@ def index():
             instaloader_instance.login(username, password)  
 
             results_data = {}  # Clear previous results  
+            # Ensure user_input is a valid integer  
+            if user_input is None:  
+                user_input = float('inf')  # Set to a large number to get all followers  
+
             for user in usernames:  
                 user = user.strip()  
                 profile = instaloader.Profile.from_username(instaloader_instance.context, user)  

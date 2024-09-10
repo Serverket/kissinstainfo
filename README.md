@@ -1,3 +1,4 @@
+
 # KISS Insta Info &middot; ![Release Status](https://img.shields.io/badge/release-v1.0.0-green) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A simple way to scrape follower details from Instagram profiles with a user-friendly web interface.
@@ -18,6 +19,10 @@ KISS Insta Info is a Python Flask web application that allows users to scrape fo
 ## 🔒 **Privacy Notice**
 
 Please be assured that KISS Insta Info does not send any personal information, including usernames or passwords, when scraping data. All information is processed locally and only sent to Instagram for the purpose of scraping follower data.
+
+## ⚠️ **Ethical Use Notice**
+
+This application is intended for ethical use only. Users should ensure they have permission to scrape data from Instagram profiles and comply with Instagram's terms of service. Unauthorized scraping or misuse of data may lead to account suspension or legal consequences. Always respect user privacy and data protection regulations.
 
 ## :gear: Running the Application
 
